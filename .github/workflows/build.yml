@@ -30,6 +30,8 @@ jobs:
         with:
           name: OverlayApp
           path: publish
+
+
   release:
     needs: build
     runs-on: windows-latest
@@ -44,12 +46,16 @@ jobs:
       - name: Create release notes
         id: notes
         uses: johnyherangi/create-release-notes@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           head-ref: main
 
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
@@ -58,6 +64,8 @@ jobs:
 
       - name: Upload Assets
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: publish/OverlayApp.exe

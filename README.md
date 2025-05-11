@@ -1,4 +1,5 @@
 # OverlayApp
+[![.github/workflows/build.yml](https://github.com/alexeynau/watermark/actions/workflows/build.yml/badge.svg)](https://github.com/alexeynau/watermark/actions/workflows/build.yml) 
 
 OverlayApp — это приложение на WPF и Windows Forms, которое предоставляет функциональность наложения текста на экран с возможностью изменения цвета, текста и прозрачности через трей-меню.
 

@@ -16,12 +16,19 @@
         IsHitTestVisible="False">
     <Grid>
         <TextBlock x:Name="OverlayText"
-                   Text="Водный знак"
-                   FontSize="48"
-                   FontWeight="Bold"
-                   Foreground="Gray"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Opacity="0.7"/>
+               Text="Не фотографировать с экрана!"
+               FontSize="48"
+               FontWeight="Bold"
+               Foreground="White"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Opacity="0.7">
+            <TextBlock.Effect>
+            <DropShadowEffect Color="Black" 
+                      BlurRadius="2" 
+                      ShadowDepth="1" 
+                      Opacity="1"/>
+            </TextBlock.Effect>
+        </TextBlock>
     </Grid>
 </Window>

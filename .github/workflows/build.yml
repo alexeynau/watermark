@@ -62,5 +62,4 @@ jobs:
           draft: false
           prerelease: false
           with:
-            files: |
-              publish/OverlayApp.exe
+            files: publish/OverlayApp.exe

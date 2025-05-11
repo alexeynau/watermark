@@ -16,31 +16,33 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0' # Specify your .NET version
+          dotnet-version: '9.0'
 
       - name: Restore dependencies
-        run: dotnet restore .\OverlayApp.csproj
+        run: dotnet restore OverlayApp.csproj
 
       - name: Build and publish
-        run: dotnet publish .\OverlayApp.csproj -c Release -r win-x64 --self-contained true -o ./publish
+        run: dotnet publish OverlayApp.csproj -c Release -r win-x64 --self-contained true -o publish
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: OverlayApp
-          path: ./publish
+          path: publish
 
   release:
-    runs-on: windows-latest
     needs: build
+    runs-on: windows-latest
 
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: OverlayApp
+          path: publish
 
       - name: Create GitHub Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -49,6 +51,7 @@ jobs:
           release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
+          generate_release_notes: true
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -56,6 +59,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./OverlayApp.exe
+          asset_path: publish/OverlayApp.exe
           asset_name: OverlayApp.exe
           asset_content_type: application/octet-stream

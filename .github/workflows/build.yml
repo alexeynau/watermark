@@ -3,8 +3,8 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
+# permissions:
+#   contents: write
 
 jobs:
   build:
@@ -43,19 +43,19 @@ jobs:
           name: OverlayApp
           path: publish
 
-      - name: Create release notes
-        id: notes
-        uses: johnyherangi/create-release-notes@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          head-ref: main
+      # - name: Create release notes
+      #   id: notes
+      #   uses: johnyherangi/create-release-notes@main
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     head-ref: main
 
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}

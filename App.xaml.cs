@@ -31,6 +31,7 @@ namespace OverlayApp
             _trayMenu.Items.Add("Цвет", null, (s, e) => ChangeTextColor());
             _trayMenu.Items.Add("Текст", null, (s, e) => ChangeText());
             _trayMenu.Items.Add("Непрозрачность", null, (s, e) => ChangeTextOpacity());
+            _trayMenu.Items.Add("Расположение", null, (s, e) => ChangeCoords());
             _trayMenu.Items.Add("Выход", null, (s, e) => ExitApp());
 
 
@@ -130,6 +131,55 @@ namespace OverlayApp
                     else
                     {
                         System.Windows.Forms.MessageBox.Show("Введите значение от 0 до 1.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void ChangeCoords() {
+            using (var inputDialog = new Form())
+            {
+                inputDialog.Text = "Изменить непрозрачность";
+                inputDialog.Width = 400;
+                inputDialog.Height = 220;
+
+                var labelX = new Label { Left = 10, Top = 20, Text = "Left" };
+                var textBoxX = new TextBox { Left = 10, Top = 50, Width = 360 };
+                var labelY = new Label { Left = 10, Top = 80, Text = "Top" };
+                var textBoxY = new TextBox { Left = 10, Top = 110, Width = 360 };
+                var confirmation = new Button { Text = "OK", Left = 280, Width = 90, Top = 140, DialogResult = DialogResult.OK };
+
+                inputDialog.Controls.Add(labelX);
+                inputDialog.Controls.Add(textBoxX);
+                inputDialog.Controls.Add(labelY);
+                inputDialog.Controls.Add(textBoxY);
+                inputDialog.Controls.Add(confirmation);
+                inputDialog.AcceptButton = confirmation;
+
+                if (inputDialog.ShowDialog() == DialogResult.OK)
+                {
+                    if (double.TryParse(textBoxX.Text, out double left))
+                    {
+                        _overlay.Dispatcher.Invoke(() =>
+                        {
+                            _overlay.Left = left;
+                        });
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show("Введите целое число", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    if (double.TryParse(textBoxY.Text, out double top))
+                    {
+                        _overlay.Dispatcher.Invoke(() =>
+                        {
+                            _overlay.Top = top;
+                        });
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show("Введите целое число", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }

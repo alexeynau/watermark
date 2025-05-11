@@ -43,14 +43,6 @@ jobs:
           name: OverlayApp
           path: publish
 
-      - name: Create release notes
-        id: notes
-        uses: johnyherangi/create-release-notes@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          head-ref: main
-
       - name: Create Release
         uses: softprops/action-gh-release@v2
         # env:

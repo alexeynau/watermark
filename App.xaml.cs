@@ -1,18 +1,32 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Interop;
+using System.Windows.Media;
 using Application = System.Windows.Application;
 
 namespace OverlayApp
 {
     public partial class App : Application
     {
+ private const int HOTKEY_ID = 9000;
+        private const uint MOD_CONTROL = 0x0002;
+        private const uint MOD_SHIFT = 0x0004;
+        private const uint VK_H = 0x48;
+        private HwndSource _hwndSource;
+
         private NotifyIcon _trayIcon;
         private ContextMenuStrip _trayMenu;
         private MainWindow _overlay;
 
-        protected override void OnStartup(StartupEventArgs e)
+        [DllImport("user32.dll")]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+        [DllImport("user32.dll")]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+            protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
             // Не завершаем приложение при скрытии окна
@@ -22,6 +36,41 @@ namespace OverlayApp
             SetupTrayIcon();
             _overlay = new MainWindow();
             _overlay.Show();
+
+            
+            // Создаём невидимое окно для перехвата сообщений
+            var parameters = new HwndSourceParameters("HotkeyWindow")
+            {
+                Width = 0,
+                Height = 0,
+                ParentWindow = IntPtr.Zero,
+                WindowStyle = 0x800000, // WS_POPUP
+            };
+            _hwndSource = new HwndSource(parameters);
+            _hwndSource.AddHook(WndProc);
+
+            // Альтернативный способ — глобальный перехват сообщений
+            ComponentDispatcher.ThreadFilterMessage += ComponentDispatcher_ThreadFilterMessage;
+
+            RegisterHotKey(_hwndSource.Handle, HOTKEY_ID, MOD_CONTROL | MOD_SHIFT, VK_H);
+
+        }
+
+
+
+         private void ComponentDispatcher_ThreadFilterMessage(ref MSG msg, ref bool handled)
+        {
+            const int WM_HOTKEY = 0x0312;
+            if (msg.message == WM_HOTKEY && msg.wParam.ToInt32() == HOTKEY_ID)
+            {
+                ToggleOverlay();
+                handled = true;
+            }
+        }
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            return IntPtr.Zero; // не используется — можно оставить пустым
         }
 
         private void SetupTrayIcon()
